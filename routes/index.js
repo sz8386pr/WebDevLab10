@@ -105,4 +105,81 @@ router.post('/addSighting', function (req, res, next){
   });
 });
 
+
+// POST delete.js Bird
+router.post('/delete.js', function(req, res, next){
+
+    Bird.findByIdAndRemove(req.body._id)
+        .then( (deletedTask) => {
+            if (deletedTask) {
+                res.redirect('/');
+            } else {
+                var error = new Error('Task Not Found');
+                error.status = 404;
+                next(error);
+            }
+        })
+        .catch( (err) => {
+            next(err);
+        })
+});
+
+
+// POST edit Bird
+router.post('/editBird', function(req, res, next){
+
+    var update = {};    // update fields
+    // if there has been a modification/entered value into the edit form field,
+    //  add <fieldname>:<editvalue> pair to the update dictionary
+    if (req.body.description){
+        update['description'] = req.body.description
+    }
+    if (req.body.height){
+        update['height'] = req.body.height
+    }
+    if (req.body.averageEggs){
+        update['averageEggs'] = req.body.averageEggs
+    }
+    // update only if edited value is different from the current value in the table
+    if (req.body.endangered !== req.body._endangered )
+    {
+        update['endangered'] = req.body.endangered
+    }
+    if (req.body.nestLocation){
+        update['nest.location'] = req.body.nestLocation
+    }
+    if (req.body.nestMaterials){
+        update['nest.materials'] = req.body.nestMaterials
+    }
+
+    // find the data by id and update with the previously generated update statement
+    Bird.findOneAndUpdate(
+        {_id: req.body._id},
+        update,
+        { runValidators: true })     // run validator in the models
+
+        .then( (updatedBirdDoc) => {
+            if (updatedBirdDoc) {
+                res.redirect(`/bird/${req.body._id}`);
+            } else {
+                var err = Error("Adding sighting error, bird not found");
+                err.status = 404;
+                throw err;
+            }
+        }).catch( (err) => {
+        if (err.name === "CastError") {
+            req.flash('error', 'Date must be in a valid format');
+            res.redirect(`/bird/${req.body._id}`);
+        }
+        else if (err.name === "ValidationError") {
+            req.flash('error', err.message);
+            res.redirect(`/bird/${req.body._id}`);
+        }
+        else {
+            next(err);
+        }
+    });
+});
+
+
 module.exports = router;
