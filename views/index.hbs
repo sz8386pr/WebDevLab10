@@ -5,16 +5,32 @@
 
   <form method="POST" action="/addBird">
 
-    Name:           <input name="name" required> <br>
-    Description:    <input name="description"> <br>
-    Average Height: <input name="height" type="number" min="1" max="300"> cm <br>
-    Average Eggs:   <input name="averageEggs" type="number" min='1' max='50'> <br>
-    Endangered?     <input name="endangered" value="true" type="checkbox"> <br>
-    Nest Materials: <input name="nestMaterials"> <br>
-    Nest Location:  <input name="nestLocation"> <br>
-
-    <button type="submit">Submit</button>
-
+    <table>
+        <tr>
+            <td> Name:</td><td><input name="name" required></td>
+        </tr>
+        <tr>
+            <td> Description:</td><td><input name="name" required></td>
+        </tr>
+        <tr>
+            <td> Average Height:</td><td><input name="height" type="number" min="1" max="300"> cm</td>
+        </tr>
+        <tr>
+            <td> Average Eggs:</td><td><input name="averageEggs" type="number" min='1' max='50'> eggs</td>
+        </tr>
+        <tr>
+            <td> Endangered? </td><td><input name="endangered" value="true" type="checkbox"></td>
+        </tr>
+        <tr>
+            <td> Nest Materials:</td><td><input name="nestMaterials" required></td>
+        </tr>
+        <tr>
+            <td> Nest Location:</td><td><input name="nestLocation"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button type="submit">Submit</button></td>
+        </tr>
+    </table>
   </form>
 
   <div class='flash-errors'>

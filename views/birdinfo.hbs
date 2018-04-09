@@ -61,9 +61,12 @@
         <h3>Report a new sighting</h3>
 
         <form method="POST" action="/addSighting">
-          Sighting date: <input type="datetime-local" name="date" required>
-          <input type="hidden" name="_id" value={{bird._id}}>
-          <button type=submit>Submit Sighting</button>
+            <p id="display-coordinates"></p><button id="get-coordinates" type="button">Get Coordinate</button><br>
+            Sighting date: <input type="datetime-local" name="date" required>
+            <input type="hidden" name="_id" value={{bird._id}}>
+            <input id='latitude' type="hidden" name="latitude">
+            <input id='longitude' type="hidden" name="longitude">
+            <button id='sighting-submit-button' type=submit style="display:none;">Submit Sighting</button>
         </form>
 
     <div class="flash-errors">
@@ -80,11 +83,13 @@
 
         <h3>All sighting dates</h3>
         {{#each bird.datesSeen}}
-          <p>{{formatDate this}}</p>
+          <p>{{formatDate this.date}} coordinates:{{this.coordinates.latitude}}, {{this.coordinates.longitude}}</p>
         {{else}}
           <p>No sightings for {{bird.name}}</p>
         {{/each}}
     </div>
+
+    <div id="map"></div>
 
     <form class="delete-form" action="/delete" method="POST">
         <input class="delete-button" type="submit" name="delete" value="Delete">
@@ -93,6 +98,41 @@
 
 </div>
 
+<hr>
+<p><a href='/'>Back to Home</a></p>
+
 <!--delete button confirm and edit form reveal scripts-->
 <script src="/javascripts/delete.js"></script>
 <script src="/javascripts/edit_bird.js"></script>
+<script src="/javascripts/location.js"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAR6bJEPiwWXRKjwv1sym7L8ca-FdRr8D0&callback=initMap"
+        type="text/javascript"></script>
+
+<!--map script-->
+<script>
+    <!-- add map coordinates-->
+    var markers = [];
+    {{#each bird.datesSeen}}
+        markers.push({lat:{{this.coordinates.latitude}}, lng:{{this.coordinates.longitude}} });
+    {{/each}}
+
+    function initMap() {
+        //The mapDiv is the HTML element that will hold the map
+        var mapDiv = document.getElementById("map");
+        //Set three required options to display the map
+        //Other options such as preventing scrolling or zooming, are available
+        var mapOptions = {
+            center: {lat: 45, lng: -93.16},   // Lat and long to center the map
+            zoom: 10,                                   // 0 = the whole world, 22 = max zoom in
+        };
+        var map = new google.maps.Map(mapDiv, mapOptions);
+        for (marker in markers) {
+            new google.maps.Marker({
+                position: {lat: markers[marker]['lat'], lng: markers[marker]['lng']},
+                map: map,
+                draggable: false,               //No moving the marker!,
+                title: ''
+            });
+        }
+    }
+</script>

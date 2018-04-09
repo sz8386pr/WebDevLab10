@@ -79,7 +79,17 @@ router.post('/addSighting', function (req, res, next){
 
   Bird.findOneAndUpdate(
     {_id: req.body._id},
-    {$push: {datesSeen:{ $each: [req.body.date], $sort: -1 }}},
+    {
+        $push: {
+            datesSeen: {
+                $each: [{
+                    date: req.body.date, coordinates:
+                        {latitude: req.body.latitude, longitude: req.body.longitude}
+                }],
+                $sort: {date: 1}
+            }
+        }
+    },
     { runValidators: true})
 
     .then( (updatedBirdDoc) => {
@@ -107,7 +117,7 @@ router.post('/addSighting', function (req, res, next){
 
 
 // POST delete.js Bird
-router.post('/delete.js', function(req, res, next){
+router.post('/delete', function(req, res, next){
 
     Bird.findByIdAndRemove(req.body._id)
         .then( (deletedTask) => {

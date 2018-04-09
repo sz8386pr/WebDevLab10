@@ -20,14 +20,23 @@ var birdSchema = new mongoose.Schema({
   endangered: {type: Boolean, default: false}, // is this bird species threated with extinction?
   datesSeen: [
     {
-      type: Date,
-      required: [true, 'A date is required to add a new sighting.'],
-      validate: {
-        validator: function(date) {
-          return date.getTime() <= Date.now();
+    date:
+        {
+            type: Date,
+            required: [true, 'A date is required to add a new sighting.'],
+            validate: {
+              validator: function (date) {
+                  return date.getTime() <= Date.now();
+              },
+              message: 'Date must be a valid date, and date must be now or in the past.'
+            }
         },
-        message: 'Date must be a valid date, and date must be now or in the past.'
-      },
+    coordinates:
+        {
+            latitude: Number,
+            longitude: Number
+        }
+
     }
   ],  // Array of dates a bird of this species was seen
   nest: {
