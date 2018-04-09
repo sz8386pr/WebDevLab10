@@ -1,3 +1,4 @@
+// delete bird info page confirmation
 $(document).ready(function(){
     $(".delete-button").click(function(event) {
         if( !confirm('This will delete this entire bird page.-- Are you sure?') )
